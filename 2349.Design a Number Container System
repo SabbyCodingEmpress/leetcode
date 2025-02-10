@@ -1,0 +1,49 @@
+var NumberContainers = function() {
+    this.indexMap = new Map();
+    this.numMap = new Map();
+};
+
+/** 
+ * @param {number} index 
+ * @param {number} number
+ * @return {void}
+ */
+NumberContainers.prototype.change = function(index, number) {
+    //if index already had a num, remove it from numMap
+    if(this.indexMap.has(index)) {
+        let oldNumber = this.indexMap.get(index);
+        if(this.numMap.has(oldNumber)) {
+            this.numMap.get(oldNumber).delete(index);
+            if(this.numMap.get(oldNumber).size === 0) {
+                this.numMap.delete(oldNUmber); //Clean up if empty
+            }
+        }
+    }
+    //Update indexMap with the new number
+    this.indexMap.set(index, number);
+    
+    //add index to numMap (ensure sorted order)
+    if(!this.numMap.has(number)) {
+        this.numMap.set(number, new Set());
+    }
+    this.numMap.get(number).add(index);
+};
+
+/** 
+ * @param {number} number
+ * @return {number}
+ */
+NumberContainers.prototype.find = function(number) {
+    if(!this.numMap.has(number) || this.numMap.get(number).size === 0){
+        return -1;
+    }
+    //return the smallest index (set maintains order)
+    return Math.min(...this.numMap.get(number));    
+};
+
+/** 
+ * Your NumberContainers object will be instantiated and called as such:
+ * var obj = new NumberContainers()
+ * obj.change(index,number)
+ * var param_2 = obj.find(number)
+ */
